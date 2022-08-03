@@ -49,6 +49,18 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+
+        $role = Auth::user()->user_type;
+        switch($role) {
+            case 'teacher':
+                return redirect(RouteServiceProvider::TEACHER_DASHBOARD);
+                break;
+            case 'student':
+                return redirect(RouteServiceProvider::STUDENT_DASHBOARD);
+                break;
+            default:
+                return redirect(RouteServiceProvider::STUDENT_DASHBOARD);
+                break;
+        }
     }
 }

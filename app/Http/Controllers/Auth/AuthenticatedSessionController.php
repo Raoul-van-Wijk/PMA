@@ -31,8 +31,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $role = Auth::user()->user_type;
+        switch($role) {
+            case 'teacher':
+                return redirect()->intended(RouteServiceProvider::TEACHER_DASHBOARD);
+                break;
+            case 'student':
+                return redirect()->intended(RouteServiceProvider::STUDENT_DASHBOARD);
+                break;
+            default:
+                return redirect()->intended(RouteServiceProvider::HOME);
+                break;
+        }
+        // return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
