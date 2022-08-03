@@ -15,4 +15,8 @@ class SchoolClass extends Model
         'student_id',
     ];
 
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student');
+    }
 }

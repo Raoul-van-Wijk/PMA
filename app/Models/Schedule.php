@@ -22,4 +22,22 @@ class Schedule extends Model
         'yearweek',
     ];
 
+    public function class()
+    {
+        return $this->belongsTo('App\Models\Classes');
+    }
+    public function teacher()
+    {
+        return $this->belongsTo('App\Models\Teacher');
+    }
+    public function course()
+    {
+        return $this->belongsTo('App\Models\Course');
+    }
+    public function assignment()
+    {
+        return $this->belongsTo('App\Models\Assignment');
+    }
+
+
 }

@@ -17,4 +17,15 @@ class Progress extends Model
         'percentage',
         'completed',
     ];
+
+    public function assignment()
+    {
+        return $this->belongsTo('App\Models\Assignment');
+    }
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student');
+    }
+
+    
 }
