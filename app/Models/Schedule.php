@@ -41,4 +41,14 @@ class Schedule extends Model
     }
 
 
+
+    public static function getScheduleByClass($id)
+    {
+        return Schedule::all()->where('class_id', '=', $id);
+    }
+    public static function getScheduleById($id)
+    {
+        return Schedule::
+where('teacher_id', '=', $id);
+    }
 }
