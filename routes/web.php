@@ -25,17 +25,20 @@ Route::group(['middleware' => 'auth'], function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::prefix('teacher')->group( function() {
+
+    Route::middleware('check.user.type:teacher|admin')->prefix('teacher')->group( function() {
         Route::get('/', function () {
             return view('teacher.dashboard');
         })->name('teacher.dashboard');
     });
 
-    Route::prefix('student')->group( function() {
+
+    Route::middleware('check.user.type:student|admin')->prefix('student')->group( function() {
         Route::get('/', function () {
             return view('student.dashboard');
         })->name('student.dashboard');
     });
+
 
     Route::prefix('courses')->group( function() {
         Route::get('/', [CourseController::class, 'index'])->name('courses');
@@ -43,11 +46,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/storeCourse', [CourseController::class, 'storeCourse'])->name('storeCourse');
     });
 
+
     Route::prefix('classes')->group( function() {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
         Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('register');
         Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('store');
     });
+
 
     Route::prefix('schedule')->group( function() {
         Route::get('/', [SchoolClassController::class, 'index'])->name('schedule');
