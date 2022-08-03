@@ -25,6 +25,18 @@ Route::group(['middleware' => 'auth'], function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::prefix('teacher')->group( function() {
+        Route::get('/', function () {
+            return view('teacher.dashboard');
+        })->name('teacher.dashboard');
+    });
+
+    Route::prefix('student')->group( function() {
+        Route::get('/', function () {
+            return view('student.dashboard');
+        })->name('student.dashboard');
+    });
+
     Route::prefix('courses')->group( function() {
         Route::get('/', [CourseController::class, 'index'])->name('courses');
         Route::get('/registerCourse', [CourseController::class, 'registerCourse'])->name('registerCourse');
@@ -40,8 +52,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('schedule')->group( function() {
         Route::get('/', [SchoolClassController::class, 'index'])->name('schedule');
         Route::get('/{name}', [SchoolClassController::class, 'show'])->name('show');
-        Route::post('/store', [SchoolClassController::class, 'storeSchedule'])->name('storeSchedule');
-    });
+            Route::post('/store', [SchoolClassController::class, 'storeSchedule'])->name('storeSchedule');
+        });
 });
 
 
