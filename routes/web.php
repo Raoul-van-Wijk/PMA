@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -27,9 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::middleware('check.user.type:teacher|admin')->prefix('teacher')->group( function() {
-        Route::get('/', function () {
-            return view('teacher.dashboard');
-        })->name('teacher.dashboard');
+        Route::get('/', [DashboardController::class, 'teacherDashboard'])->name('teacher.dashboard');
     });
 
 
