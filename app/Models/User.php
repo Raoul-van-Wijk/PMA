@@ -41,4 +41,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function isRoot()
+    {
+        return $this->user_type === 'root';
+    }
+
+    public function hasRole($roles)
+    {
+        return in_array($this->user_type, $roles);
+    }
 }
