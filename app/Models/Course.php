@@ -16,4 +16,9 @@ class Course extends Model
         'year'
     ];
 
+
+    public static function getCourseNameById($id)
+    {
+        return Course::where('course_id', '=', $id)->value('course_name');
+    }
 }
