@@ -34,23 +34,23 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
 
-    Route::prefix('courses')->group( function() {
+    Route::prefix('courses')->middleware('check.user.type:teacher|admin|root')->group( function() {
         Route::get('/', [CourseController::class, 'index'])->name('courses');
         Route::get('/registerCourse', [CourseController::class, 'registerCourse'])->name('registerCourse');
         Route::post('/storeCourse', [CourseController::class, 'storeCourse'])->name('storeCourse');
     });
 
 
-    Route::prefix('classes')->group( function() {
+    Route::prefix('classes')->middleware('check.user.type:teacher|admin|root')->group( function() {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
-        Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('register');
+        Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('registerClass');
         Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('storeClass');
     });
 
 
     Route::prefix('schedule')->group( function() {
         Route::get('/', [ScheduleController::class, 'schedules'])->name('allSchedules');
-        Route::get('/create', [ScheduleController::class, 'create'])->middleware('check.user.type:admin|teacher')->name('createSchedule');
+        Route::get('/create', [ScheduleController::class, 'create'])->middleware('check.user.type:admin|teacher')->name('registerSchedule');
 
         Route::get('/{id}', [ScheduleController::class, 'showById'])->name('showSingleSchedule');
         Route::get('/{id}/edit', [ScheduleController::class, 'edit'])->name('editSchedule');
