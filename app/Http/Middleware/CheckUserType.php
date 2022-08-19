@@ -26,6 +26,6 @@ class CheckUserType
         if ($user->hasRole($userTypes)) {
             return $next($request);
         }
-        return redirect('/');
+        return redirect(url()->previous())->with('error', 'You do not have permission to access this page');
     }
 }
