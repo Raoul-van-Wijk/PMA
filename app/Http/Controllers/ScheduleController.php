@@ -9,6 +9,7 @@ use App\Models\SchoolClass;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Assignments;
+use App\Models\StudentClass;
 
 class ScheduleController extends Controller
 {
@@ -16,7 +17,7 @@ class ScheduleController extends Controller
     public function schedules()
     {
         // get all the class_id's from the user that is logged in
-        $class_ids = SchoolClass::where('student_id' , '=' , auth()->user()->id)->get('class_id');
+        $class_ids = StudentClass::where('student_id' , '=' , auth()->user()->id)->get('class_id');
         $schedules = self::getSchedulesByClassIds($class_ids);
         return view('schedules.schedules', compact('schedules'));
     }
@@ -29,7 +30,7 @@ class ScheduleController extends Controller
 
     public function create()
     {
-        $classes = SchoolClass::getClassesById(auth()->user()->id);
+        $classes = StudentClass::getClassesById(auth()->user()->id);
         $teachers = User::getNameFromTeachers();
         $courses = Course::all();
         $assignments = Assignments::all();
@@ -39,14 +40,18 @@ class ScheduleController extends Controller
     public function storeSchedule(ScheduleRequest $request)
     {
         $schedule = new Schedule();
-        $schedule->class_id = $request->class_id;
-        $schedule->day = $request->day;
-        $schedule->start_time = $request->start_time;
-        $schedule->end_time = $request->end_time;
-        $schedule->room = $request->room;
-        $schedule->course_id = $request->course_id;
+        $schedule->class_id = $request->class;
+        $schedule->teacher_id = $request->teacher;
+        $schedule->date = $request->date;
+        $schedule->startdate = $request->start_time;
+        $schedule->enddate = $request->end_time;
+        $schedule->location = $request->classroom;
+        $schedule->course_id = $request->course;
+        $schedule->assignment_id = $request->assignment;
+        $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
+        $schedule->yearweek = date('W', strtotime($request->date));
         $schedule->save();
-        return redirect()->route('schedules')->with('success', 'Schedule created successfully');
+        return redirect()->route('allSchedules')->with('success', 'Schedule created successfully');
     }
 
 
