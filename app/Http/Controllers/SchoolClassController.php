@@ -14,4 +14,8 @@ class SchoolClassController extends Controller
             'classes' => SchoolClass::all(),
         ]);
     }
+
+    public function show($id) {
+        dd($id);
+    }
 }
