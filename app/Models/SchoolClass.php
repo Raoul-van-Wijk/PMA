@@ -19,4 +19,9 @@ class SchoolClass extends Model
     {
         return $this->belongsTo('App\Models\Student');
     }
+
+    public static function getClassesById($id)
+    {
+        return SchoolClass::where('student_id', '=', $id)->get();
+    }
 }

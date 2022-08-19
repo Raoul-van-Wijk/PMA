@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Course;
+use App\Models\SchoolClass;
+use App\Models\Assignments;
 
 class Schedule extends Model
 {
@@ -37,18 +39,21 @@ class Schedule extends Model
     }
     public function assignment()
     {
-        return $this->belongsTo('App\Models\Assignment', 'assignment_id', 'assignment_id');
+        return $this->belongsTo('App\Models\Assignments', 'assignment_id', 'assignment_id');
     }
 
 
 
-    public static function getScheduleByClass($id)
+    public static function getScheduleByClassId($id)
     {
-        return Schedule::all()->where('class_id', '=', $id);
+        return Schedule::where('class_id', '=', $id)->with('courses')->get();
+    }
+    public static function getScheduleByTeacherId($id)
+    {
+        return Schedule::where('teacher_id', '=', $id);
     }
     public static function getScheduleById($id)
     {
-        return Schedule::
-where('teacher_id', '=', $id);
+        return Schedule::where('schedule_id', '=', $id)->with('courses')->first()->get();
     }
 }

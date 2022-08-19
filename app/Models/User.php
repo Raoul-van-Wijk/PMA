@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'password',
         'user_type'
     ];
 
@@ -29,7 +30,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
@@ -50,5 +50,10 @@ class User extends Authenticatable
     public function hasRole($roles)
     {
         return in_array($this->user_type, $roles);
+    }
+
+    public static function getNameFromTeachers()
+    {
+        return User::where('user_type', 'teacher')->get('name')->get('user_id');
     }
 }
