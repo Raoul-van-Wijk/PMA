@@ -9,19 +9,12 @@ class SchoolClass extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'class_id',
         'class_name',
-        'student_id',
     ];
 
-    public function student()
-    {
-        return $this->belongsTo('App\Models\Student');
-    }
 
-    public static function getClassesById($id)
-    {
-        return SchoolClass::where('student_id', '=', $id)->get();
-    }
 }
