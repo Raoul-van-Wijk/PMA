@@ -59,5 +59,27 @@ class ScheduleController extends Controller
         return $schedules;
     }
 
+    public function calculateSchoolWeeks($date)
+    {
+        $days = [
+            'Mon' => '-0 day',
+            'Tue' => '-1 day',
+            'Wed' => '-2 day',
+            'Thu' => '-3 day',
+            'Fri' => '-4 day',
+            'Sat' => '-5 day',
+            'Sun' => '-6 day'
+        ];
+        $start = '08/01/2022';
+        $day = date('D', strtotime($date));
+        $date = explode('-', $date);
+        $date = $date[1] . '/' . $date[2] . '/' . $date[0];
+        $first = \DateTime::createFromFormat('m/d/Y', $start);
+        $second = \DateTime::createFromFormat('m/d/Y', $date);
+        $second->modify($days[$day]);
+        $second;
+        return floor($first->diff($second)->days/7);
+    }
+
 
 }
