@@ -18,11 +18,13 @@ class CreateSchedulesTable extends Migration
             $table->integer('class_id');
             $table->integer('teacher_id');
             $table->integer('course_id');
-            $table->integer('assignment_id');
+            $table->integer('assignment_id')->default(null);
             $table->string('location');
             $table->string('startdate');
             $table->string('enddate');
             $table->string('date');
+            $table->string('schoolweek');
+            $table->string('yearweek');
 
             $table->foreign('class_id')->references('class_id')->on('school_classes');
             $table->foreign('teacher_id')->references('id')->on('users');

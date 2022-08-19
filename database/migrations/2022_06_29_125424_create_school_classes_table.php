@@ -16,9 +16,6 @@ class CreateSchoolClassesTable extends Migration
         Schema::create('school_classes', function (Blueprint $table) {
             $table->id('class_id');
             $table->string('class_name');
-            $table->integer('student_id');
-
-            $table->foreign('student_id')->references('id')->on('users');
         });
     }
 
