@@ -54,6 +54,6 @@ class User extends Authenticatable
 
     public static function getNameFromTeachers()
     {
-        return User::where('user_type', 'teacher')->get('name')->get('user_id');
+        return User::where('user_type', '=', 'teacher')->get(['id', 'name']);
     }
 }
