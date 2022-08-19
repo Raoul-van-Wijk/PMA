@@ -22,8 +22,7 @@ class CreateSchedulesTable extends Migration
             $table->string('location');
             $table->string('startdate');
             $table->string('enddate');
-            $table->string('schoolweek');
-            $table->string('yearweek');
+            $table->string('date');
 
             $table->foreign('class_id')->references('class_id')->on('school_classes');
             $table->foreign('teacher_id')->references('id')->on('users');
