@@ -25,7 +25,7 @@ class ScheduleRequest extends FormRequest
     {
         return [
             'class' => 'required',
-            'teacher' => 'nullable',
+            'teacher' => 'required',
             'course' => 'required',
             'assignment' => 'nullable',
             'classroom' => 'required',
