@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ScheduleController;
 
 
 /*
@@ -22,14 +23,8 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
-
-    Route::middleware('check.user.type:teacher|admin')->prefix('teacher')->group( function() {
-        Route::get('/', [DashboardController::class, 'teacherDashboard'])->name('teacher.dashboard');
-    });
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 
     Route::middleware('check.user.type:student|admin')->prefix('student')->group( function() {
@@ -49,15 +44,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('classes')->group( function() {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
         Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('register');
-        Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('store');
+        Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('storeClass');
     });
 
 
     Route::prefix('schedule')->group( function() {
-        Route::get('/', [SchoolClassController::class, 'index'])->name('schedule');
-        Route::get('/{name}', [SchoolClassController::class, 'show'])->name('show');
-            Route::post('/store', [SchoolClassController::class, 'storeSchedule'])->name('storeSchedule');
-        });
+        Route::get('/', [ScheduleController::class, 'schedules'])->name('allSchedules');
+        Route::get('/create', [ScheduleController::class, 'create'])->middleware('check.user.type:admin|teacher')->name('createSchedule');
+
+        Route::get('/{id}', [ScheduleController::class, 'showById'])->name('showSingleSchedule');
+        Route::get('/{id}/edit', [ScheduleController::class, 'edit'])->name('editSchedule');
+
+        Route::post('/store', [ScheduleController::class, 'storeSchedule'])->name('storeSchedule');
+    });
 });
 
 
