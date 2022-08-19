@@ -5,14 +5,14 @@
     <select name="class" id="class">
         <option value="">Select a class</option>
         @foreach ($classes as $class)
-            <option value="{{ $class->class_id }}">{{ $class->class_name }}</option>
+            <option value="{{ $class->class_id }}">{{ $class->class->class_name }}</option>
         @endforeach
     </select>
     @if(auth()->user()->hasRole(['root', 'admin']))
         <select name="teacher" id="teacher">
             <option value="">Select a teacher</option>
             @foreach ($teachers as $teacher)
-                <option value="{{ $teacher->user_id }}">{{ $teacher->name }}</option>
+                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
             @endforeach
         </select>
     @endif
@@ -33,5 +33,9 @@
     <input type="date" name="date" id="">
     <input type="time" name="start_time" id="">
     <input type="time" name="end_time" id="">
+    @if(auth()->user()->hasRole(['teacher']))
+        <input type="hidden" name="teacher" value="{{ auth()->user()->id }}">
+    @endif
     <button type="submit">Create Schedule</button>
 </form>
+
