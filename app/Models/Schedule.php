@@ -21,13 +21,14 @@ class Schedule extends Model
         'location',
         'startdate',
         'enddate',
+        'date',
         'schoolweek',
         'yearweek',
     ];
 
     public function class()
     {
-        return $this->belongsTo('App\Models\Classes', 'class_id', 'class_id');
+        return $this->belongsTo('App\Models\StudentClass', 'class_id', 'class_id');
     }
     public function teacher()
     {
