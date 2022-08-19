@@ -15,10 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-
+                    <x-nav-link :href="route('allSchedules')" :active="request()->routeIs('allSchedules')">
+                        {{ __('Schedules') }}
+                    </x-nav-link>
+                    @if(auth()->user()->hasRole(['teacher', 'admin', 'root']))
                     <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')">
                         {{ __('Course') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('classes')" :active="request()->routeIs('classes')">
+                        {{ __('Classes') }}
+                    </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
