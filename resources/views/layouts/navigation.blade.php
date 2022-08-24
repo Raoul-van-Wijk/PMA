@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('allSchedules')" :active="request()->routeIs('allSchedules')">
                         {{ __('Schedules') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('assignments')" :active="request()->routeIs('assignments')">
+                        {{ __('Assignments') }}
+                    </x-nav-link>
                     @if(auth()->user()->hasRole(['teacher', 'admin', 'root']))
                     <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')">
                         {{ __('Course') }}
