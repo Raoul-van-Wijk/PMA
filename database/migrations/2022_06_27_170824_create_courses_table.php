@@ -17,11 +17,10 @@ class CreateCoursesTable extends Migration
             $table->id('course_id');
             $table->string('course_name');
             $table->string('description');
-            $table->integer('year');
+            $table->string('year');
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
