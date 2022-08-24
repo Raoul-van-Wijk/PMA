@@ -19,6 +19,11 @@ class Course extends Model
 
     public static function getCourseNameById($id)
     {
-        return Course::where('course_id', '=', $id)->value('course_name');
+        return Course::where('course_id', '=', $id)->get('course_name');
+    }
+
+    public static function getCoursesByIds($ids)
+    {
+        return Course::whereIn('course_id', $ids)->get();
     }
 }
