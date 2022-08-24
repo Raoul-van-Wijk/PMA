@@ -13,7 +13,7 @@
             </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-2">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <a href="{{ route('registerClass') }}">Add students to class</a>
+                    <a href="{{ route('addStudentsToClass') }}">Add students to class</a>
                 </div>
             </div>
             @include('classes.components.class-item')
