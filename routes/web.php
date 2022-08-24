@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\AssignmentController;
 
 
 /*
@@ -45,17 +46,35 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
         Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('registerClass');
         Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('storeClass');
+        Route::get('/addStudent', [SchoolClassController::class, 'addStudentsView'])->name('addStudentsToClass');
+        Route::post('/addStudent/', [SchoolClassController::class, 'addStudentsToClass'])->name('addStudentsToClassConfirmed');
+    });
+
+    Route::prefix('assignments')->group( function() {
+        Route::get('/', [AssignmentController::class, 'index'])->name('assignments');
+        Route::get('/view/{id}', [AssignmentController::class, 'viewSingleAssignment'])->name('viewSingleAssignment');
+        Route::group(['middleware' => 'check.user.type:teacher|admin|root'], function () {
+            Route::get('/register', [AssignmentController::class, 'registerAssignment'])->name('registerAssignment');
+            Route::post('/store', [AssignmentController::class, 'storeAssignment'])->name('storeAssignment');
+            Route::get('/edit/{id}', [AssignmentController::class, 'editAssignment'])->name('editAssignment');
+            Route::post('/edit/{id}/confirmed', [AssignmentController::class, 'updateAssignment'])->name('editAssignmentConfirmed');
+            Route::delete('/delete/{id}', [AssignmentController::class, 'deleteAssignment'])->name('deleteAssignment');
+        });
     });
 
 
     Route::prefix('schedule')->group( function() {
-        Route::get('/', [ScheduleController::class, 'schedules'])->name('allSchedules');
-        Route::get('/create', [ScheduleController::class, 'create'])->middleware('check.user.type:admin|teacher')->name('registerSchedule');
+        Route::get('/single/{id}', [ScheduleController::class, 'showById'])->name('showSingleSchedule');
 
-        Route::get('/{id}', [ScheduleController::class, 'showById'])->name('showSingleSchedule');
-        Route::get('/{id}/edit', [ScheduleController::class, 'edit'])->name('editSchedule');
+        Route::middleware('check.user.type:root|admin|teacher')->group(function () {
+            Route::get('/create', [ScheduleController::class, 'createScheduleView'])->name('registerSchedule');
+            Route::get('/edit/{id}', [ScheduleController::class, 'editScheduleView'])->name('editSchedule');
+            Route::put('/edit/{id}/confirmed', [ScheduleController::class, 'editSchedule'])->name('editScheduleConfirmed');
+            Route::delete('/delete/{id}', [ScheduleController::class, 'deleteSchedule'])->name('deleteSchedule');
+            Route::post('/store', [ScheduleController::class, 'storeSchedule'])->name('storeSchedule');
+        });
 
-        Route::post('/store', [ScheduleController::class, 'storeSchedule'])->name('storeSchedule');
+        Route::get('/{id?}', [ScheduleController::class, 'schedules'])->name('allSchedules');
     });
 });
 
