@@ -28,4 +28,16 @@ class StudentClass extends Model
     {
         return StudentClass::where('student_id', '=', $id)->with('class')->get();
     }
+
+    public static function getClassIds()
+    {
+        $ids = StudentClass::where('student_id' , '=' , auth()->user()->id)->get('class_id');
+        $class_ids_in_array = [];
+        foreach($ids as $id) {
+            // if(Schedule::where('class_id', '=', $id->class_id)->exists()) {
+                array_push($class_ids_in_array, $id->class_id);
+            }
+        // }
+        return $class_ids_in_array;
+    }
 }
