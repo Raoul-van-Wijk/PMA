@@ -56,4 +56,10 @@ class User extends Authenticatable
     {
         return User::where('user_type', '=', 'teacher')->get(['id', 'name']);
     }
+
+
+    public static function getStudentsEmail()
+    {
+        return User::where('user_type', '=', 'student')->get(['id', 'email']);
+    }
 }
