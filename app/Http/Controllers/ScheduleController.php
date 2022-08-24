@@ -10,30 +10,41 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Assignments;
 use App\Models\StudentClass;
+use Illuminate\Queue\Events\Looping;
 
 class ScheduleController extends Controller
 {
 
-    public function schedules()
+    public function schedules($id = null)
     {
-        // get all the class_id's from the user that is logged in
-        $class_ids = StudentClass::where('student_id' , '=' , auth()->user()->id)->get('class_id');
-        $schedules = self::getSchedulesByClassIds($class_ids);
-        return view('schedules.schedules', compact('schedules'));
+        $days = ['Mon' => 'Monday', 'Tue' => 'Tuesday', 'Wed' => 'Wednesday', 'Thu' => 'Thursday', 'Fri' => 'Friday', 'Sat' => 'Saturday', 'Sun' => 'Sunday'];
+        $class_ids = StudentClass::getClassIds();
+        if(auth()->user()->isRoot()) {
+            $schedules = Schedule::getAllSchedules($class_ids = 'root', $id);
+        }
+        if($id != null) {
+            $schedules = Schedule::getAllSchedules($class_ids, $id);
+        } else {
+            $id = date('W');
+            $schedules = Schedule::getAllSchedules($class_ids, $id);
+        }
+        $schedules = self::formatSchedules($schedules);
+        return view('schedules.schedules', compact('schedules', 'id', 'days'));
     }
 
     public function showById($id)
     {
-        $schedules = Schedule::getScheduleById($id);
-        return view('schedules.schedule-components.schedule', compact('schedules'));
+        $schedule = Schedule::getSingleScheduleWithRelations($id);
+
+        return view('schedules.schedule', compact('schedule'));
     }
 
-    public function create()
+    public function createScheduleView()
     {
         $classes = StudentClass::getClassesById(auth()->user()->id);
         $teachers = User::getNameFromTeachers();
         $courses = Course::all();
-        $assignments = Assignments::all();
+        $assignments = Assignments::getAssignments();
         return view('schedules.create', \compact('classes', 'teachers', 'courses', 'assignments'));
     }
 
@@ -49,20 +60,46 @@ class ScheduleController extends Controller
         $schedule->course_id = $request->course;
         $schedule->assignment_id = $request->assignment;
         $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
-        $schedule->yearweek = date('W', strtotime($request->date));
+        $schedule->yearweek = date('W', strtotime($request->date)) +0;
         $schedule->save();
         return redirect()->route('allSchedules')->with('success', 'Schedule created successfully');
     }
 
-
-    public function getSchedulesByClassIds($ids)
+    public function deleteSchedule($id)
     {
-        $schedules = [];
-        foreach($ids as $id) {
-            array_push($schedules, Schedule::getScheduleByClassId($id->class_id));
-        }
-        return $schedules;
+        $schedule = Schedule::where('schedule_id', $id);
+        $schedule->delete();
+        return redirect()->route('allSchedules')->with('success', 'Schedule deleted successfully');
     }
+
+    public function editScheduleView($id)
+    {
+        $schedule = Schedule::getScheduleById($id);
+        $classes = StudentClass::getClassesById(auth()->user()->id);
+        $teachers = User::getNameFromTeachers();
+        $courses = Course::all();
+        $assignments = Assignments::all();
+        return view('schedules.update-schedule', \compact('schedule', 'classes', 'teachers', 'courses', 'assignments', 'id'));
+    }
+
+    public function editSchedule($id, Request $request)
+    {
+        $schedule = Schedule::find($id);
+        $schedule->class_id = $request->class;
+        $schedule->teacher_id = $request->teacher;
+        $schedule->date = $request->date;
+        $schedule->startdate = $request->start_time;
+        $schedule->enddate = $request->end_time;
+        $schedule->location = $request->classroom;
+        $schedule->course_id = $request->course;
+        $schedule->assignment_id = $request->assignment;
+        $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
+        $schedule->yearweek = date('W', strtotime($request->date)) +0;
+        $schedule->update();
+        return redirect()->route('allSchedules')->with('success', 'Schedule updated successfully');
+    }
+
+
 
     public function calculateSchoolWeeks($date)
     {
@@ -84,6 +121,27 @@ class ScheduleController extends Controller
         $second->modify($days[$day]);
         $second;
         return floor($first->diff($second)->days/7);
+    }
+
+
+
+    public function formatSchedules($schedules)
+    {
+        $formattedSchedules = [
+            'Mon' => [],
+            'Tue' => [],
+            'Wed' => [],
+            'Thu' => [],
+            'Fri' => [],
+            'Sat' => [],
+            'Sun' => []
+        ];
+
+            foreach($schedules as $schedule) {
+                $day = date('D',strtotime($schedule->date));
+                $formattedSchedules[$day][] = $schedule;
+            }
+        return $formattedSchedules;
     }
 
 
