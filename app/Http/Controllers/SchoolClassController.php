@@ -17,9 +17,24 @@ class SchoolClassController extends Controller
         return view('classes.index', compact('classes', 'countStudents'));
     }
 
+    public function viewSingleClass($class_id)
+    {
+        $class = SchoolClass::find($class_id);
+        $students = StudentClass::where('class_id', '=', $class_id)->with('student')->get();
+        return view('classes.single_class', compact('class', 'students'));
+    }
+
     public function registerClass()
     {
         return view('classes.register');
+    }
+
+    public function removeStudentsFromClassView($class_id)
+    {
+        $class_name = SchoolClass::find($class_id)->class_name;
+        $ids = StudentClass::where('class_id', '=', $class_id)->get(['student_id']);
+        $students = User::getStudentsEmails($ids);
+        return view('classes.remove-students', compact('class_id', 'students', 'class_name'));
     }
 
     public function storeClass(Request $request)
@@ -45,22 +60,37 @@ class SchoolClassController extends Controller
         return $res;
     }
 
-    public function addStudentsView()
+    public function removeStudentsFromClass($class_id, Request $request)
     {
-        $classes = SchoolClass::get(['class_id', 'class_name']);
-        $students = User::getStudentsEmail();
-        return view('classes.add-students', compact('students', 'classes'));
+        $class_id = $request->class_id;
+        $students = $request->students;
+        foreach ($students as $student) {
+            StudentClass::where('student_id', '=', $student)->where('class_id', '=', $class_id)->delete();
+        }
+        return redirect()->route('viewSingleClass', $class_id)->with('success', 'Students removed successfully');
     }
 
-    public function addStudentsToClass(Request $request)
+    public function deleteClass($class_id)
+    {
+        $class = SchoolClass::find($class_id);
+        $class->delete();
+        return redirect()->route('classes')->with('success', 'Class deleted successfully');
+    }
+
+    public function addStudentsView($class_id)
+    {
+        $ids = StudentClass::where('class_id', '=', $class_id)->get(['student_id']);
+        $students = User::getStudentsEmail($ids);
+        return view('classes.add-students', compact('students', 'class_id'));
+    }
+
+    public function addStudentsToClass($class_id, Request $request)
     {
 
         $request->validate([
             'selectedStudents' => 'required',
-            'class_id' => 'required',
         ]);
         $selectedStudents = $request->selectedStudents;
-        $class_id = $request->class_id;
         foreach ($selectedStudents as $student) {
             $studentClass = new StudentClass();
             $studentClass->student_id = $student;
@@ -69,4 +99,5 @@ class SchoolClassController extends Controller
         }
         return redirect()->route('classes')->with('success', 'Students added successfully');
     }
+
 }
