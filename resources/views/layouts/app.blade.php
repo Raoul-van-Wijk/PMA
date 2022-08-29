@@ -27,7 +27,11 @@
                     {{ $header }}
                 </div>
             </header>
-
+            @if (\Session::has('success'))
+            <script>
+                alert("{{ \Session::get('success') }}");
+            </script>
+            @endif
             <!-- Page Content -->
             <main>
                 {{ $slot }}
