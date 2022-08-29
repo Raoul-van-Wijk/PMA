@@ -9,6 +9,9 @@ class StudentClass extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+
     protected $fillable = [
         'class_id',
         'student_id',

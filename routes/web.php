@@ -46,8 +46,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
         Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('registerClass');
         Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('storeClass');
-        Route::get('/addStudent', [SchoolClassController::class, 'addStudentsView'])->name('addStudentsToClass');
-        Route::post('/addStudent/', [SchoolClassController::class, 'addStudentsToClass'])->name('addStudentsToClassConfirmed');
+        Route::get('/addStudent/{class_id}', [SchoolClassController::class, 'addStudentsView'])->name('addStudentsToClass');
+        Route::post('/addStudent/{class_id}', [SchoolClassController::class, 'addStudentsToClass'])->name('addStudentsToClassConfirmed');
+        Route::get('/removeStudent/{class_id}', [SchoolClassController::class, 'removeStudentsFromClassView'])->name('removeStudentsFromClass');
+        Route::post('/removeStudent/{class_id}', [SchoolClassController::class, 'removeStudentsFromClass'])->name('removeStudentsFromClassConfirmed');
     });
 
     Route::prefix('assignments')->group( function() {
