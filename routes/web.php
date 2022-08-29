@@ -47,10 +47,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [SchoolClassController::class, 'index'])->name('classes');
         Route::get('/register', [SchoolClassController::class, 'registerClass'])->name('registerClass');
         Route::post('/store', [SchoolClassController::class, 'storeClass'])->name('storeClass');
+        Route::delete('/delete/{class_id}', [SchoolClassController::class, 'deleteClass'])->name('deleteClass');
         Route::get('/addStudent/{class_id}', [SchoolClassController::class, 'addStudentsView'])->name('addStudentsToClass');
         Route::post('/addStudent/{class_id}', [SchoolClassController::class, 'addStudentsToClass'])->name('addStudentsToClassConfirmed');
         Route::get('/removeStudent/{class_id}', [SchoolClassController::class, 'removeStudentsFromClassView'])->name('removeStudentsFromClass');
-        Route::post('/removeStudent/{class_id}', [SchoolClassController::class, 'removeStudentsFromClass'])->name('removeStudentsFromClassConfirmed');
+        Route::delete('/removeStudent/{class_id}', [SchoolClassController::class, 'removeStudentsFromClass'])->name('removeStudentsFromClassConfirmed');
+        Route::get('/{id}', [SchoolClassController::class, 'viewSingleClass'])->name('viewSingleClass');
     });
 
     Route::prefix('assignments')->group( function() {
