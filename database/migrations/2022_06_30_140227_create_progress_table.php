@@ -18,7 +18,6 @@ class CreateProgressTable extends Migration
             $table->integer('assignment_id');
             $table->integer('student_id');
             $table->string('content');
-            $table->float('percentage');
             $table->boolean('completed');
 
             $table->foreign('assignment_id')->references('assignment_id')->on('assignments');

@@ -43,4 +43,9 @@ class StudentClass extends Model
         // }
         return $class_ids_in_array;
     }
+
+    public static function getStudentsByClassId($id)
+    {
+        return StudentClass::where('class_id', '=', $id)->with('student')->get();
+    }
 }

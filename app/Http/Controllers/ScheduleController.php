@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Assignments;
 use App\Models\StudentClass;
+use App\Models\Progress;
 use Illuminate\Queue\Events\Looping;
 
 class ScheduleController extends Controller
@@ -62,6 +63,7 @@ class ScheduleController extends Controller
         $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
         $schedule->yearweek = date('W', strtotime($request->date)) +0;
         $schedule->save();
+        Progress::createProgression($request->assignment, $request->class);
         return redirect()->route('allSchedules')->with('success', 'Schedule created successfully');
     }
 
