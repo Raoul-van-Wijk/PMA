@@ -58,8 +58,13 @@ class User extends Authenticatable
     }
 
 
-    public static function getStudentsEmail()
+    public static function getStudentsEmail($ids)
     {
-        return User::where('user_type', '=', 'student')->get(['id', 'email']);
+        return User::where('user_type', '=', 'student')->whereNotIn('id', $ids)->get(['id', 'email']);
+    }
+
+    public static function getStudentsEmails($ids)
+    {
+        return User::where('user_type', '=', 'student')->whereIn('id', $ids)->get(['id', 'email']);
     }
 }
