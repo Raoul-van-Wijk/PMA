@@ -6,6 +6,7 @@ use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\OverviewController;
 
 
 /*
@@ -75,6 +76,11 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::get('/{id?}', [ScheduleController::class, 'schedules'])->name('allSchedules');
+    });
+
+
+    Route::prefix('overview')->group( function() {
+        Route::get('/', [OverviewController::class, 'overview'])->name('overview');
     });
 });
 

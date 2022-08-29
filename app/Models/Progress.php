@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\StudentClass;
 
 class Progress extends Model
 {
@@ -26,6 +27,4 @@ class Progress extends Model
     {
         return $this->belongsTo('App\Models\Student');
     }
-
-    
 }
