@@ -54,6 +54,9 @@ class Assignments extends Model
                 return Assignments::where('teacher_id', '=', auth()->user()->id)->get();
                 break;
             default:
+                return Assignments::whereIn('assignment_id', Schedule::getAssignmentIdsFromClassIds())->with(['assignment' => function($q) {
+                    $q->where('student_id', auth()->user()->id);
+                }])->get();
                 break;
         }
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\StudentClass;
+use App\Models\Assignments;
 
 class Progress extends Model
 {
@@ -26,5 +27,11 @@ class Progress extends Model
     public function student()
     {
         return $this->belongsTo('App\Models\Student');
+    }
+
+    public static function getProgressByStudent($student_id)
+    {
+        $assignments = Assignments::getAssignments();
+        return $assignments;
     }
 }
