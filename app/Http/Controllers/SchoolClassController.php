@@ -45,6 +45,12 @@ class SchoolClassController extends Controller
         $class = new SchoolClass();
         $class->class_name = $request->class_name;
         $class->save();
+        $class_id = SchoolClass::where('class_name', '=', $request->class_name)->get(['class_id']);
+
+        $studentClass = new StudentClass();
+            $studentClass->student_id = auth()->user()->id;
+            $studentClass->class_id = $class_id[0]->class_id;
+            $studentClass->save();
         return redirect()->route('classes')->with('success', 'Class created successfully');
     }
 
