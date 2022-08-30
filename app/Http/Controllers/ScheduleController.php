@@ -63,7 +63,6 @@ class ScheduleController extends Controller
         $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
         $schedule->yearweek = date('W', strtotime($request->date)) +0;
         $schedule->save();
-        Progress::createProgression($request->assignment, $request->class);
         return redirect()->route('allSchedules')->with('success', 'Schedule created successfully');
     }
 
