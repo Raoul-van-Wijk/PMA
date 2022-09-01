@@ -32,6 +32,12 @@
             <option value="{{ $assignment->assignment_id }}" @if ($assignment->assignment_id == $schedule[0]->assignment_id) selected @endif>{{ $assignment->title }}</option>
         @endforeach
     </select>
+    <select name="period" id="period">
+        <option value="">Select a Period</option>
+        @foreach ($periods as $period)
+            <option value="{{ $period->id }}">{{ $period->name }}</option>
+        @endforeach
+    </select>
     <input type="text" name="classroom" id="" value="{{ $schedule[0]->location }}">
     <input type="date" name="date" id="" value="{{ $schedule[0]->date }}">
     <input type="time" name="start_time" id="" value="{{ $schedule[0]->startdate }}">

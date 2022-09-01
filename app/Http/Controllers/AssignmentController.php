@@ -13,10 +13,15 @@ class AssignmentController extends Controller
         return view('assignments.assignments', compact('assignments'));
     }
 
-    public function viewSingleAssignment($id)
+    public function viewSingleAssignment($id, $class_id = 8)
     {
+        $progress = [1 => 'Completed', 0 => 'Complete assignment'];
         $assignment = Assignments::find($id);
-        return view('assignments.single-assignment', compact('assignment'));
+        $progression = 'Not completed';
+        if($assignment->progress()->exists()) {
+            $progression = $progress[$assignment->progress[0]->completed];
+        }
+        return view('assignments.single-assignment', compact('assignment', 'progression', 'class_id'));
     }
 
     public function registerAssignment()

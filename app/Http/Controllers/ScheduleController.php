@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Assignments;
 use App\Models\StudentClass;
+use App\Models\Period;
 use App\Models\Progress;
 use Illuminate\Queue\Events\Looping;
 
@@ -46,7 +47,8 @@ class ScheduleController extends Controller
         $teachers = User::getNameFromTeachers();
         $courses = Course::all();
         $assignments = Assignments::getAssignments();
-        return view('schedules.create', \compact('classes', 'teachers', 'courses', 'assignments'));
+        $periods = Period::all();
+        return view('schedules.create', \compact('classes', 'teachers', 'courses', 'assignments', 'periods'));
     }
 
     public function storeSchedule(ScheduleRequest $request)
@@ -60,7 +62,8 @@ class ScheduleController extends Controller
         $schedule->location = $request->classroom;
         $schedule->course_id = $request->course;
         $schedule->assignment_id = $request->assignment;
-        $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
+        $schedule->period_id = $request->period;
+        $schedule->schoolweek = self::calculateSchoolWeeks($request->date, $request->period);
         $schedule->yearweek = date('W', strtotime($request->date)) +0;
         $schedule->save();
         return redirect()->route('allSchedules')->with('success', 'Schedule created successfully');
@@ -79,8 +82,9 @@ class ScheduleController extends Controller
         $classes = StudentClass::getClassesById(auth()->user()->id);
         $teachers = User::getNameFromTeachers();
         $courses = Course::all();
+        $periods = Period::all();
         $assignments = Assignments::all();
-        return view('schedules.update-schedule', \compact('schedule', 'classes', 'teachers', 'courses', 'assignments', 'id'));
+        return view('schedules.update-schedule', \compact('schedule', 'classes', 'teachers', 'courses', 'assignments', 'id', 'periods'));
     }
 
     public function editSchedule($id, Request $request)
@@ -94,7 +98,8 @@ class ScheduleController extends Controller
         $schedule->location = $request->classroom;
         $schedule->course_id = $request->course;
         $schedule->assignment_id = $request->assignment;
-        $schedule->schoolweek = self::calculateSchoolWeeks($request->date);
+        $schedule->period_id = $request->period;
+        $schedule->schoolweek = self::calculateSchoolWeeks($request->date, $request->period);
         $schedule->yearweek = date('W', strtotime($request->date)) +0;
         $schedule->update();
         return redirect()->route('allSchedules')->with('success', 'Schedule updated successfully');
@@ -102,7 +107,7 @@ class ScheduleController extends Controller
 
 
 
-    public function calculateSchoolWeeks($date)
+    public function calculateSchoolWeeks($date, $period)
     {
         $days = [
             'Mon' => '-0 day',
@@ -113,15 +118,15 @@ class ScheduleController extends Controller
             'Sat' => '-5 day',
             'Sun' => '-6 day'
         ];
-        $start = '08/01/2022';
+        $start = Period::find($period);
         $day = date('D', strtotime($date));
-        $date = explode('-', $date);
-        $date = $date[1] . '/' . $date[2] . '/' . $date[0];
+        $start = self::formatDate($start->start);
+        $date = self::formatDate($date);
         $first = \DateTime::createFromFormat('m/d/Y', $start);
         $second = \DateTime::createFromFormat('m/d/Y', $date);
         $second->modify($days[$day]);
         $second;
-        return floor($first->diff($second)->days/7);
+        return floor($first->diff($second)->days/7) + 1;
     }
 
 
@@ -145,5 +150,10 @@ class ScheduleController extends Controller
         return $formattedSchedules;
     }
 
+    public function formatDate($date)
+    {
+        $date = explode('-', $date);
+        return $date[1] . '/' . $date[2] . '/' . $date[0];
+    }
 
 }

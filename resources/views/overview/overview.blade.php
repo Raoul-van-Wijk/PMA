@@ -2,33 +2,31 @@
     <x-slot name="header">
         {{ __('Overview') }}
     </x-slot>
+    {{ dd($ass) }}
+    @foreach ($ass as $period => $progress )
 
-    <thead>
-        <tr>
-            <th>{{ __('Week 1') }}</th>
-            <th>{{ __('Week 2') }}</th>
-            <th>{{ __('Week 3') }}</th>
-            <th>{{ __('Week 4') }}</th>
-            <th>{{ __('Week 5') }}</th>
-            <th>{{ __('Week 6') }}</th>
-            <th>{{ __('Week 7') }}</th>
-            <th>{{ __('Week 8') }}</th>
-            <th>{{ __('Week 9') }}</th>
-            <th>{{ __('Week 10') }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{ $overview->week1 }}</td>
-            <td>{{ $overview->week2 }}</td>
-            <td>{{ $overview->week3 }}</td>
-            <td>{{ $overview->week4 }}</td>
-            <td>{{ $overview->week5 }}</td>
-            <td>{{ $overview->week6 }}</td>
-            <td>{{ $overview->week7 }}</td>
-            <td>{{ $overview->week8 }}</td>
-            <td>{{ $overview->week9 }}</td>
-            <td>{{ $overview->week10 }}</td>
-        </tr>
-    </tbody>
+        <h2>period: {{ $period }}</h2>
+        @foreach ($progress as $week => $progression)
+            <h3>Week: {{ $week }}</h3>
+            <?php $i = 0 ?>
+            @foreach ($progression['assignments'] as $assignment => $prog)
+
+                <p>Assignment: {{ $prog[$i]['title'] }}</p>
+
+                @foreach ($prog[$i]['students_progression'] as $student)
+                {{-- {{ dd($student) }} --}}
+                <p>Student: {{ $student['name'] }}</p>
+                @if ($student['progress']['completed'] == 0)
+                <p class="not-finished">Progression: Not completed</p>
+                @endif
+                @if ($student['progress']['completed'] == 1)
+                <p class="finished">Progression: Completed</p>
+                @endif
+                @endforeach
+                <?php $i++ ?>
+            @endforeach
+        @endforeach
+
+    @endforeach
+
 </x-app-layout>

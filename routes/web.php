@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\OverviewController;
+use App\Http\Controllers\ProgressController;
 
 
 /*
@@ -57,7 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::prefix('assignments')->group( function() {
         Route::get('/', [AssignmentController::class, 'index'])->name('assignments');
-        Route::get('/view/{id}', [AssignmentController::class, 'viewSingleAssignment'])->name('viewSingleAssignment');
+        Route::get('/view/{id}/{class_id?}', [AssignmentController::class, 'viewSingleAssignment'])->name('viewSingleAssignment');
         Route::group(['middleware' => 'check.user.type:teacher|admin|root'], function () {
             Route::get('/register', [AssignmentController::class, 'registerAssignment'])->name('registerAssignment');
             Route::post('/store', [AssignmentController::class, 'storeAssignment'])->name('storeAssignment');
@@ -83,8 +84,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
 
-    Route::prefix('overview')->group( function() {
-        Route::get('/', [OverviewController::class, 'overview'])->name('overview');
+    Route::prefix('overview')->middleware('check.user.type:root|admin|teacher')->group( function() {
+        Route::get('/{id}', [OverviewController::class, 'overview'])->name('overview');
+    });
+
+    Route::prefix('progress')->group( function() {
+        Route::get('/create/{id}', [ProgressController::class, 'createProgress'])->name('createProgression');
     });
 });
 

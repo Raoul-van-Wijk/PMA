@@ -27,7 +27,7 @@
                                 <p>Location: {{ $schedule[0]->location }}</p>
                                 <p>Timestamp: {{ $schedule[0]->date . ' - ' . $schedule[0]->startdate. ' - '. $schedule[0]->enddate }}</p>
                                 <p>Assignment: {{ $schedule[0]->assignment->title }}</p>
-                                <a href="{{ route('viewSingleAssignment', $schedule[0]->assignment->assignment_id) }}">Go to assignment</a>
+                                <a href="{{ route('viewSingleAssignment', [$schedule[0]->assignment->assignment_id, $schedule[0]->class_id]) }}">Go to assignment</a>
                             </div>
                         </div>
                         @if(auth()->user()->user_type == 'root' || auth()->user()->id ==  $schedule[0]->teacher_id)

@@ -21,6 +21,7 @@ class Schedule extends Model
         'teacher_id',
         'course_id',
         'assignment_id',
+        'period_id',
         'location',
         'startdate',
         'enddate',
@@ -44,6 +45,10 @@ class Schedule extends Model
     public function assignment()
     {
         return $this->belongsTo('App\Models\Assignments', 'assignment_id', 'assignment_id');
+    }
+    public function period()
+    {
+        return $this->belongsTo('App\Models\Period', 'period_id', 'id');
     }
 
 
@@ -92,6 +97,11 @@ class Schedule extends Model
     {
 
         return Schedule::whereIn('class_id', StudentClass::where('student_id', auth()->user()->id)->get('class_id'))->get('assignment_id');
+    }
+
+    public static function getAssignmentIdsFromClassIdAndDate($class, $date)
+    {
+        return Schedule::where('class_id', $class)->where('date', '>', $date[0]->start)->where('date', '<', $date[0]->end)->get('assignment_id');
     }
 }
 

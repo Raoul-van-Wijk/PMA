@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\StudentClass;
 use App\Models\Assignments;
+use App\Models\Schedule;
 
 class Progress extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'progress_id';
     protected $fillable = [
         'progress_id',
         'assignment_id',
@@ -29,9 +31,17 @@ class Progress extends Model
         return $this->belongsTo('App\Models\Student');
     }
 
-    public static function getProgressByStudent($student_id)
+    public static function getProgressByTeacher($class, $period)
     {
-        $assignments = Assignments::getAssignments();
+        // get period start and end dates
+        $period = Period::where('id', $period)->get();
+        $assignments = Assignments::getAssignments($class, $period);
         return $assignments;
+    }
+
+
+    public static function Test($class_id)
+    {
+        return Schedule::where('class_id', $class_id)->with(['assignment.progress'])->get();
     }
 }
